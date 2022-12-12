@@ -1,0 +1,108 @@
+﻿@model IndexViewModel
+<style>
+    .glyphicon {
+        display: inline-block;
+        padding: 0 5px;
+    }
+
+    .glyphicon-chevron-right:after {
+        content: "\00BB";
+    }
+
+    .glyphicon-chevron-left:before {
+        content: "\00AB";
+    }
+</style>
+
+<h1>Список товарів</h1>
+@if (User.Identity.IsAuthenticated) 
+{
+    <p><a asp-controller="Product" asp-action="Create">Додати продукт</a></p>
+}
+
+
+<form method="get">
+    <label>Назва: </label>
+    <input name="name" value="@Model.FilterViewModel.SelectedName" />
+
+    <input type="submit" value="Фільтр" />
+</form>
+
+<table class="table">
+    <tr>
+        <th>
+            <a asp-action="Index"
+               asp-route-sortOrder="@(Model.SortViewModel.NameSort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-category="@(Model.FilterViewModel.SelectedCategory)">Назва</a>
+        </th>
+        <th>
+            Фото
+        </th>
+        <th>
+            <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.PriceSort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-category="@(Model.FilterViewModel.SelectedCategory)">Ціна</a>
+        </th>
+        <th>
+            Упаковка
+        </th>
+        <th>
+            <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.CategorySort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-category="@(Model.FilterViewModel.SelectedCategory)">Категорія</a>
+        </th>
+    </tr>
+    @foreach (Product prod in Model.Products)
+    {
+        <tr>
+            <td>@prod.name</td>
+            <td><img class="img-fluid" src="@prod.img"></td>
+            <td>@prod.price<span>.00 UAH</span></td>
+            <td>@prod.box<span> гр.</span></td>
+            <td>@prod.Category?.name</td>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <td>
+                    <a asp-action="Edit" asp-controller="Product" asp-route-id="@prod.id">Редагувати</a>
+                </td>
+                <td>
+                    <form asp-controller="Product" asp-action="Delete" method="post" asp-route-id="@prod.id">
+                        <input type="submit" value="Видалити" />
+                    </form>
+                </td>
+            }
+        </tr>
+    }
+</table>
+
+<p>
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+   asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+   asp-route-name="@(Model.FilterViewModel.SelectedName)"
+   asp-route-category="@(Model.FilterViewModel.SelectedCategory)"
+   asp-route-sortorder="@(Model.SortViewModel.Current)"
+   class="glyphicon glyphicon-chevron-left">
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a asp-action="Index"
+   asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+   asp-route-name="@(Model.FilterViewModel.SelectedName)"
+   asp-route-category="@(Model.FilterViewModel.SelectedCategory)"
+   asp-route-sortorder="@(Model.SortViewModel.Current)"
+   class="glyphicon glyphicon-chevron-right">
+        Вперед
+    </a>
+}
+</p>
+
+<script>
+    $(".select option").each(function () {
+    $(this).siblings('[value="' + this.value + '"]').remove();
+    });
+</script>

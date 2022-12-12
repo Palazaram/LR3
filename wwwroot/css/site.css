@@ -1,0 +1,24 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+form span {
+    color: #ff0000;
+    font-weight: 700;
+    margin: 5px, 0;
+}
